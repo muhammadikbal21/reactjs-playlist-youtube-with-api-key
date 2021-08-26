@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import ReactPlayer from "react-player";
 
 function CourseStructure(props) {
   const courseName = props.match.params.coursename;
@@ -32,18 +33,34 @@ function CourseStructure(props) {
       });
   }, [courseName]);
 
+  const watch = (vid) => {
+    if (localStorage.getItem("saveId")) {
+      if (JSON.parse(localStorage.getItem("saveId")).includes(vid)) {
+        return true;
+      }
+    }
+    return false;
+  };
+
   const renderVideo = () => {
     return (
       <>
         <h1>{title}</h1>
         <div className="video-container">
-          <iframe
-            title={counter}
-            width={853}
-            height={480}
-            src={`//www.youtube.com/embed/${vid}?rel=0`}
-            frameBorder={0}
-            allowFullScreen
+          <ReactPlayer
+            className="react-player"
+            url={`https://www.youtube.com/watch?v=${vid}`}
+            width="100%"
+            height="100%"
+            controls={true}
+            onEnded={() => {
+              if (localStorage.getItem("saveId")) {
+                let data = JSON.parse(localStorage.getItem("saveId"));
+                localStorage.setItem("saveId", JSON.stringify([...data, vid]));
+              } else {
+                localStorage.setItem("saveId", JSON.stringify([vid]));
+              }
+            }}
           />
         </div>
       </>
@@ -70,6 +87,9 @@ function CourseStructure(props) {
                   }}
                 >
                   {e.title}
+                  {
+                    watch(e.vid) && <i className="tiny material-icons">check</i>
+                  }
                 </li>
               );
             })}
