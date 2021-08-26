@@ -1,8 +1,6 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 
 function CourseStructure(props) {
-  const link = "https://youtu.be/";
   const courseName = props.match.params.coursename;
   const courses = {
     reactjs: [
@@ -19,20 +17,21 @@ function CourseStructure(props) {
 
   const [vid, uid] = useState(courses[courseName][0].vid);
   const [title, utit] = useState(courses[courseName][0].title);
+  const [counter, setCounter] = useState(0)
 
   const renderVideo = () => {
     return (
-        <>
+      <>
         <h1>{title}</h1>
-      <div className="video-container">
-        <iframe
-          width={853}
-          height={480}
-          src={`//www.youtube.com/embed/${vid}?rel=0`}
-          frameBorder={0}
-          allowFullScreen
-        />
-      </div>
+        <div className="video-container">
+            <iframe
+            width={853}
+            height={480}
+            src={`//www.youtube.com/embed/${vid}?rel=0`}
+            frameBorder={0}
+            allowFullScreen
+            />
+        </div>
       </>
     );
   };
@@ -42,10 +41,11 @@ function CourseStructure(props) {
       <ul className="collection">
         {
             courses[courseName].map((e, i) => {
-                return <Link to="#!" key={i} className="collection-item" onClick={() => {
+                return <li key={e.vid} className={counter === i ? "collection-item myitem" : "collection-item"} onClick={() => {
                     uid(e.vid)
                     utit(e.title)
-                }}>{e.title}</Link>
+                    setCounter(i)
+                }}>{e.title}</li>
             })
         }
       </ul>
